@@ -1,0 +1,99 @@
+--- a/globals.h	2015-04-26 16:51:35.782500377 +0300
++++ b/globals.h	2015-04-26 16:48:05.249456400 +0300
+@@ -964,6 +964,7 @@
+ 	uchar           ecm[MAX_ECM_SIZE];
+ 	uchar           cw[16];
+ 	uchar           ecmd5[CS_ECMSTORESIZE];
++	int8_t          demux_index;
+ 	int16_t         ecmlen;
+ 	uint16_t        caid;
+ 	uint16_t        ocaid;              //original caid, used for betatunneling
+@@ -1423,6 +1424,7 @@
+ 	LLIST           *ll_entitlements;               // entitlements
+ 	int8_t          enable;
+ 	int8_t          active;
++	int8_t          for_demux;                      // set demux number for which use this reader
+ 	int8_t          dropbadcws;                     // Schlocke: 1=drops cw if checksum is wrong. 0=fix checksum (default)
+ 	int8_t          disablecrccws;                  // 1=disable cw checksum test. 0=enable checksum check
+ 	uint64_t        grp;
+--- a/module-dvbapi.c	2015-10-24 17:00:52.891812120 +0300
++++ b/module-dvbapi.c	2015-10-24 17:03:12.268503264 +0300
+@@ -1720,6 +1720,7 @@
+ 			}
+ 		}
+ 	}
++	er->demux_index = demux_id;
+ 	er->srvid = demux[demux_id].program_number;
+ 	er->caid  = demux[demux_id].ECMpids[pid].CAID;
+ 	er->pid   = demux[demux_id].ECMpids[pid].ECM_PID;
+@@ -2223,6 +2224,7 @@
+ 		for(n = 0; n < demux[demux_index].ECMpidcount; n++)
+ 		{
+ 			if(demux[demux_index].ECMpids[n].status == -1) continue; // skip ignores!
++			er->demux_index = demux_index;
+ 			er->caid = er->ocaid = demux[demux_index].ECMpids[n].CAID;
+ 			er->prid = demux[demux_index].ECMpids[n].PROVID;
+ 			er->pid = demux[demux_index].ECMpids[n].ECM_PID;
+@@ -2291,6 +2293,7 @@
+ 		
+ 		int32_t nr;
+ 		SIDTAB *sidtab;
++		er->demux_index = demux_index;
+ 		er->caid = er->ocaid = demux[demux_index].ECMpids[n].CAID;
+ 		er->prid = demux[demux_index].ECMpids[n].PROVID;
+ 		er->pid = demux[demux_index].ECMpids[n].ECM_PID;
+@@ -2357,6 +2360,7 @@
+ 		
+ 		if(demux[demux_index].ECMpids[n].status == -1) continue; // skip ignores!
+ 		
++		er->demux_index = demux_index;
+ 		er->caid = er->ocaid = demux[demux_index].ECMpids[n].CAID;
+ 		er->prid = demux[demux_index].ECMpids[n].PROVID;
+ 		er->pid = demux[demux_index].ECMpids[n].ECM_PID;
+@@ -2414,6 +2418,7 @@
+ 				cacheexprio = max_local_matching_reader+p_order+1;
+ 			}
+ 			
++			er->demux_index = demux_index;
+ 			er->caid = er->ocaid = demux[demux_index].ECMpids[n].CAID;
+ 			er->prid = demux[demux_index].ECMpids[n].PROVID;
+ 			er->pid = demux[demux_index].ECMpids[n].ECM_PID;
+@@ -4003,6 +4008,7 @@
+ 					return;
+ 				}
+ 
++				er->demux_index = demux_id;
+ 				er->srvid = demux[demux_id].program_number;
+ 
+ #ifdef WITH_STAPI5
+@@ -4045,6 +4051,7 @@
+ 			return;
+ 		}
+ 
++		er->demux_index = demux_id;
+ 		er->srvid = demux[demux_id].program_number;
+ 
+ #ifdef WITH_STAPI5
+--- a/oscam-chk.c	2015-04-26 16:51:35.810500516 +0300
++++ b/oscam-chk.c	2015-04-26 16:45:15.396614146 +0300
+@@ -681,6 +681,10 @@
+ 	if(!cl || !rdr->enable)
+ 		{ return (0); }
+ 
++	//Checking demux number for which use this reader if it is specified in config:
++	if((rdr->for_demux >= 0) && (er->demux_index != rdr->for_demux)) 
++		{ return (0); }
++
+ 	// if physical reader a card needs to be inserted
+ 	if(!is_network_reader(rdr) && rdr->card_status != CARD_INSERTED)
+ 		{ return (0); }
+--- a/oscam-config-reader.c	2015-04-26 16:51:35.786500397 +0300
++++ b/oscam-config-reader.c	2015-04-25 19:23:27.772319991 +0300
+@@ -786,6 +786,7 @@
+ 	DEF_OPT_STR("description"           , OFS(description),             NULL),
+ #endif
+ 	DEF_OPT_INT8("enable"               , OFS(enable),                  1),
++	DEF_OPT_INT8("use_for_demux"        , OFS(for_demux),               -1),
+ 	DEF_OPT_FUNC("protocol"             , 0,                            protocol_fn),
+ 	DEF_OPT_FUNC("device"               , 0,                            device_fn),
+ 	DEF_OPT_HEX("key"                   , OFS(ncd_key),                 SIZEOF(ncd_key)),

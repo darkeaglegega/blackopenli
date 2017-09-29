@@ -1,0 +1,58 @@
+[submodule "openembedded-core"]
+	path = openembedded-core
+	url = git://git.openembedded.org/openembedded-core
+	ignore = dirty
+[submodule "meta-openembedded"]
+	path = meta-openembedded
+	url = git://git.openembedded.org/meta-openembedded
+	ignore = dirty
+[submodule "bitbake"]
+	path = bitbake
+	url = git://git.openembedded.org/bitbake
+	ignore = dirty
+[submodule "meta-openpli/recipes-openpli/e2openplugins"]
+	path = meta-openpli/recipes-openpli/e2openplugins
+	url = git://github.com/E2OpenPlugins/e2openplugins.git
+	ignore = dirty
+[submodule "meta-formuler"]
+	path = meta-formuler
+	url = https://github.com/formuler/meta-formuler.git
+[submodule "meta-hd"]
+	path = meta-hd
+	url = https://github.com/HD-Digital/meta-hd.git
+[submodule "meta-vuplus"]
+	path = meta-vuplus
+	url = http://github.com/vu-plus/meta-vuplus.git
+[submodule "meta-xp"]
+	path = meta-xp
+	url = https://github.com/XP-Master/meta-xp.git
+[submodule "meta-xsarius"]
+	path = meta-xsarius
+	url = https://github.com/pli3/meta-xsarius.git
+[submodule "meta-wetek"]
+	path = meta-wetek
+	url = http://github.com/wetek-enigma/meta-wetek.git
+[submodule "meta-edision"]
+	path = meta-edision
+	url = http://github.com/open-edision/meta-edision.git
+[submodule "meta-miraclebox"]
+	path = meta-miraclebox
+	url = http://github.com/miraclebox-git/meta-miraclebox.git
+[submodule "meta-spycat"]
+	path = meta-spycat
+	url = https://github.com/open-spycat/meta-spycat.git
+[submodule "meta-xtrend-4"]
+	path = meta-xtrend-4
+	url = http://github.com/XTrendTeam/meta-xtrend-4.git
+[submodule "meta-gi-4"]
+	path = meta-gi-4
+	url = http://github.com/GIDeveloperTeam/meta-gi-4.git
+[submodule "meta-xpeedc-4"]
+	path = meta-xpeedc-4
+	url = http://github.com/XpeedDeveloperTeam/meta-xpeedc-4.git
+[submodule "meta-sab"]
+	path = meta-sab
+	url = http://github.com/mariner2/meta-sab.git
+[submodule "meta-zgemma-4"]
+	path = meta-zgemma-4
+	url = http://github.com/zgemma-star/meta-zgemma-4.git
